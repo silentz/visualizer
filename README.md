@@ -1,2 +1,2 @@
-# visualizer
+# Visualizer
 HSE project: algorithm visualization
