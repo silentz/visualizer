@@ -31,8 +31,7 @@
 				
 					<div class='languages'>
 						<div v-for='(language, index) in languages_values'
-							:class='{"button": true, "radio": true, "radio-chosen": (index == languages_chosen),
-								"radio-left": (index == 0), "radio-right": (index + 1 == languages_values.length)}'
+							:class='{"button": true, "radio": true, "radio-chosen": (index == languages_chosen)}'
 							@click="languages_chosen = index">
 							{{ language }}
 						</div>
@@ -202,9 +201,8 @@ export default {
 
 		.radio {
 			width: 80px;
-			// margin-left: 10px;
 			margin: 10px;
-			border-radius: 0;
+			border-radius: 5px;
 			border-left: none;
 			border-right: none;
 		}
@@ -213,14 +211,6 @@ export default {
 			box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.3) !important;
 			padding-top: 4px !important;
 			padding-bottom: 0px !important;
-		}
-
-		.radio-left {
-			border-radius: 10px 0 0 10px !important;
-		}
-
-		.radio-right {
-			border-radius: 0 10px 10px 0 !important;
 		}
 
 		.languages_chosen {
