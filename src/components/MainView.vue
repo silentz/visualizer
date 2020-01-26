@@ -30,8 +30,10 @@
 					</div>
 				
 					<div class='languages'>
-						<div class='button radio' v-for='(language, index) in languages_values'
-							:style="{'radio_chosen': index == languages_chosen}">
+						<div v-for='(language, index) in languages_values'
+							:class='{"button": true, "radio": true, "radio-chosen": (index == languages_chosen),
+								"radio-left": (index == 0), "radio-right": (index + 1 == languages_values.length)}'
+							@click="languages_chosen = index">
 							{{ language }}
 						</div>
 					</div>
@@ -71,7 +73,6 @@ export default {
 		grid-template-areas:
 			"options  viewer   code"
 			"controls controls controls";
-
 	}
 
 	.controls {
@@ -142,10 +143,10 @@ export default {
 			box-sizing: border-box;
 
 			.play {
-				padding-top: 4px !important;
+				padding-top: 6px !important;
 
 				&:active {
-					padding-top: 6px !important;
+					padding-top: 7px !important;
 				}
 			}
 		}
@@ -200,9 +201,30 @@ export default {
 		align-items: center;
 
 		.radio {
-			width: 70px;
-			margin: 0 0;
+			width: 80px;
+			// margin-left: 10px;
+			margin: 10px;
 			border-radius: 0;
+			border-left: none;
+			border-right: none;
+		}
+
+		.radio-chosen {
+			box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.3) !important;
+			padding-top: 4px !important;
+			padding-bottom: 0px !important;
+		}
+
+		.radio-left {
+			border-radius: 10px 0 0 10px !important;
+		}
+
+		.radio-right {
+			border-radius: 0 10px 10px 0 !important;
+		}
+
+		.languages_chosen {
+			color: red;
 		}
 	}
 
