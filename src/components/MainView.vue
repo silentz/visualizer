@@ -6,6 +6,7 @@
 			</div>
 			<div class='panel viewer'>
 				<h2>View</h2>
+				<div id='view-container'/>
 			</div>
 			<div class='panel code'>
 				<h2>Code</h2>
@@ -16,17 +17,21 @@
 
 					<div class='spped'>
 						slow
-						<input type='range' min='0' max='100' class='slider slider-slim'>
+						<input type='range' min='0' max='100' class='slider slider-slim' :value="current_speed">
 						fast
 					</div>
 					
 					<div class='buttons'>
 						<div class='button'>&#10216;&#10216;</div>
 						<div class='button'>&#10216;</div>
-						<div class='button play'>&#9655;</div>
+						<div :class='{"button": true, "play": !visualization_active}'
+							@click="visualization_active = !visualization_active">
+							<template v-if="visualization_active">||</template>
+							<template v-else>&#9655;</template>
+						</div>
 						<div class='button'>&#10217;</div>
 						<div class='button'>&#10217;&#10217;</div>
-						<input type='range' min='0' max='100' class='slider slider-wide'>
+						<input type='range' min='0' :max='progress_maximum' class='slider slider-wide' :value="current_progress">
 					</div>
 				
 					<div class='languages'>
@@ -44,13 +49,50 @@
 </template>
 
 <script>
+import {DataSet, Network} from "vis-network/standalone/esm/vis-network";
+
 export default {
 	name: 'MainView',
 	data: () => {
 		return {
 			languages_values: ['C++', 'Python', 'Pseudo'],
-			languages_chosen: 0
+			languages_chosen: 0,
+			current_speed: 20, // value in range [0, 100]
+			current_progress: 0,
+			progress_maximum: 100,
+			visualization_active: false,
 		}
+	},
+	mounted: () => {
+		const nodes = new DataSet([
+		  { id: 1, label: "Node 1" },
+		  { id: 2, label: "Node 2" },
+		  { id: 3, label: "Node 3" },
+		  { id: 4, label: "Node 4" },
+		  { id: 5, label: "Node 5" }
+		]);
+
+		// create an array with edges
+		const edges = new DataSet([
+		  { from: 1, to: 3 },
+		  { from: 1, to: 2 },
+		  { from: 2, to: 4 },
+		  { from: 2, to: 5 },
+		  { from: 3, to: 3 }
+		]);
+
+		// create a network
+		const container = document.getElementById("view-container");
+		const data = {
+		  nodes: nodes,
+		  edges: edges
+		};
+		const options = {
+			autoResize: false,
+			height: '100%',
+			width: '100%'
+		};
+		const network = new Network(container, data, options);
 	}
 }
 </script>
@@ -191,6 +233,20 @@ export default {
 
 	.viewer {
 		grid-area: viewer;
+		display: flex;
+		flex-direction: column;
+		justify-content: flex-start;
+		align-items: flex-start;
+
+		#view-container {
+			display: block;
+			background-color: #fff;
+			flex-grow: 1;
+			width: 100%;
+			height: 100%;
+			box-sizing: border-box;
+			overflow: hidden;
+		}
 	}
 
 	.languages {
