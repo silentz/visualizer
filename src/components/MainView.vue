@@ -61,15 +61,16 @@ export default {
 			current_progress: 0,
 			progress_maximum: 100,
 			visualization_active: false,
+			network: undefined
 		}
 	},
-	mounted: () => {
+	mounted: function() {
 		const nodes = new DataSet([
-		  { id: 1, label: "Node 1" },
-		  { id: 2, label: "Node 2" },
-		  { id: 3, label: "Node 3" },
-		  { id: 4, label: "Node 4" },
-		  { id: 5, label: "Node 5" }
+		  { id: 1, label: " 1 " },
+		  { id: 2, label: " 2 " },
+		  { id: 3, label: " 3 " },
+		  { id: 4, label: " 4 " },
+		  { id: 5, label: " 5 " }
 		]);
 
 		// create an array with edges
@@ -84,15 +85,40 @@ export default {
 		// create a network
 		const container = document.getElementById("view-container");
 		const data = {
-		  nodes: nodes,
-		  edges: edges
+		  	nodes: nodes,
+		  	edges: edges
 		};
 		const options = {
-			autoResize: false,
+			autoResize: true,
 			height: '100%',
-			width: '100%'
+			width: '100%',
+			interaction: {
+				dragView: false,
+				dragNodes: false,
+				zoomView: false
+			},
+			nodes: {
+				color: {
+					border: "#666",
+					background: "#fff",
+					highlight: {
+						border: "#666",
+						background: "#ccc",
+					}
+				},
+				font: {
+					color: "#666",
+					size: 20,
+					face: "sans-serif",
+					align: 'center'
+				},
+				shape: 'circle'
+			}
 		};
-		const network = new Network(container, data, options);
+		this.network = new Network(container, data, options);
+	},
+	methods: {
+		
 	}
 }
 </script>
