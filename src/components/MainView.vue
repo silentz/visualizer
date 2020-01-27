@@ -3,6 +3,16 @@
 		<div class='paneltable'>
 			<div class='panel options'>
 				<h2>Options</h2>
+				<div class='option-cards'>
+					<div class='card'>
+						<div class='card-header'>Header</div>
+						<div class='card-context'>Some example description</div>
+					</div>
+					<div class='card'>
+						<div class='card-header'>Header</div>
+						<div class='card-context'>Some really long example description</div>
+					</div>
+				</div>
 			</div>
 			<div class='panel viewer'>
 				<h2>View</h2>
@@ -71,7 +81,7 @@ export default {
 		  { id: 3, label: " 3 " },
 		  { id: 4, label: " 4 " },
 		  { id: 5, label: " 5 " }
-		]);
+		])
 
 		// create an array with edges
 		const edges = new DataSet([
@@ -80,14 +90,14 @@ export default {
 		  { from: 2, to: 4 },
 		  { from: 2, to: 5 },
 		  { from: 3, to: 3 }
-		]);
+		])
 
 		// create a network
-		const container = document.getElementById("view-container");
+		const container = document.getElementById("view-container")
 		const data = {
 		  	nodes: nodes,
 		  	edges: edges
-		};
+		}
 		const options = {
 			autoResize: true,
 			height: '100%',
@@ -114,8 +124,8 @@ export default {
 				},
 				shape: 'circle'
 			}
-		};
-		this.network = new Network(container, data, options);
+		}
+		this.network = new Network(container, data, options)
 	},
 	methods: {
 		
@@ -233,6 +243,7 @@ export default {
 			-webkit-user-select: none;
 			font-weight: bold;
 			box-sizing: border-box;
+			cursor: default;
 
 			&:active {
 				box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.3);
@@ -251,6 +262,38 @@ export default {
 
 	.options {
 		grid-area: options;
+
+		.option-cards {
+			display: flex;
+			flex-direction: column;
+			justify-content: flex-start;
+			align-items: center;
+			padding-top: 10px;
+
+			.card {
+				padding: 5px;
+				margin: 0;
+				-webkit-user-select: none;
+				user-select: none;
+				cursor: pointer;
+				width: 100%;
+				border-radius: 5px;
+				width: 90%;
+				margin: 5px 0;
+
+				.card-header {
+					margin-bottom: 2px;
+				}
+
+				.card-context {
+					font-size: 0.9rem;
+				}
+
+				&:hover {
+					background-color: #eee;
+				}
+			}
+		}
 	}
 
 	.code {
@@ -316,6 +359,9 @@ export default {
 			font-weight: normal;
 			padding: 0;
 			margin: 0;
+			-webkit-user-select: none;
+			user-select: none;
+			cursor: default;
 		}
 	}
 }

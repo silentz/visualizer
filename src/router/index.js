@@ -13,8 +13,8 @@ export default new Router({
     		component: RootComponent
     	},
     	{
-    		path: "/test",
-    		name: "test",
+    		path: "/dfs",
+    		name: "dfs",
     		component: MainView
     	}
     ]
