@@ -4,13 +4,9 @@
 			<div class='panel options'>
 				<h2>Options</h2>
 				<div class='option-cards'>
-					<div class='card'>
-						<div class='card-header'>Header</div>
-						<div class='card-context'>Some example description</div>
-					</div>
-					<div class='card'>
-						<div class='card-header'>Header</div>
-						<div class='card-context'>Some really long example description</div>
+					<div class='card' v-for='preset in presets'>
+						<div class='card-header'>{{ preset.title }}</div>
+						<div class='card-context'>{{ preset.description }}</div>
 					</div>
 				</div>
 			</div>
@@ -63,6 +59,7 @@ import {DataSet, Network} from "vis-network/standalone/esm/vis-network";
 
 export default {
 	name: 'MainView',
+	props: ['presets', 'algorithm'],
 	data: () => {
 		return {
 			languages_values: ['C++', 'Python', 'Pseudo'],
@@ -71,32 +68,15 @@ export default {
 			current_progress: 0,
 			progress_maximum: 100,
 			visualization_active: false,
-			network: undefined
+			network: undefined,
+			current_preset: 0,
 		}
 	},
 	mounted: function() {
-		const nodes = new DataSet([
-		  { id: 1, label: " 1 " },
-		  { id: 2, label: " 2 " },
-		  { id: 3, label: " 3 " },
-		  { id: 4, label: " 4 " },
-		  { id: 5, label: " 5 " }
-		])
-
-		// create an array with edges
-		const edges = new DataSet([
-		  { from: 1, to: 3 },
-		  { from: 1, to: 2 },
-		  { from: 2, to: 4 },
-		  { from: 2, to: 5 },
-		  { from: 3, to: 3 }
-		])
-
-		// create a network
 		const container = document.getElementById("view-container")
 		const data = {
-		  	nodes: nodes,
-		  	edges: edges
+		  	nodes: this.presets[this.current_preset].nodes,
+		  	edges: this.presets[this.current_preset].edges,
 		}
 		const options = {
 			autoResize: true,
