@@ -4,7 +4,8 @@
 			<div class='panel options'>
 				<h2>Options</h2>
 				<div class='option-cards'>
-					<div class='card' v-for='preset in presets'>
+					<div v-for='(preset, index) in presets' :class='{"card": true, "card-active": (index == current_preset)}'
+							@click="set_preset(index)">
 						<div class='card-header'>{{ preset.title }}</div>
 						<div class='card-context'>{{ preset.description }}</div>
 					</div>
@@ -68,47 +69,61 @@ export default {
 			current_progress: 0,
 			progress_maximum: 100,
 			visualization_active: false,
-			network: undefined,
 			current_preset: 0,
+
+			// ===== [Visual objects] =====
+			nodes: undefined,
+			edges: undefined,
+
+			// ===== [Network conf] =====
+			network_options: {
+				interaction: {
+					dragView: false,
+					dragNodes: false,
+					zoomView: false
+				},
+				nodes: {
+					color: {
+						border: "#666",
+						background: "#fff",
+						highlight: {
+							border: "#666",
+							background: "#ccc",
+						}
+					},
+					font: {
+						color: "#666",
+						size: 20,
+						face: "sans-serif",
+						align: 'center'
+					},
+					shape: 'circle'
+				}
+			},
 		}
 	},
 	mounted: function() {
-		const container = document.getElementById("view-container")
-		const data = {
-		  	nodes: this.presets[this.current_preset].nodes,
-		  	edges: this.presets[this.current_preset].edges,
-		}
-		const options = {
-			autoResize: true,
-			height: '100%',
-			width: '100%',
-			interaction: {
-				dragView: false,
-				dragNodes: false,
-				zoomView: false
-			},
-			nodes: {
-				color: {
-					border: "#666",
-					background: "#fff",
-					highlight: {
-						border: "#666",
-						background: "#ccc",
-					}
-				},
-				font: {
-					color: "#666",
-					size: 20,
-					face: "sans-serif",
-					align: 'center'
-				},
-				shape: 'circle'
-			}
-		}
-		this.network = new Network(container, data, options)
+		this.nodes = new DataSet([])
+		this.edges = new DataSet([])
+		this.network = new Network(document.getElementById("view-container"),
+			{ nodes: this.nodes, edges: this.edges}, this.network_options)
+		this.set_preset(0)
 	},
 	methods: {
-		
+		set_preset(preset_index) {
+			this.current_preset = preset_index
+			this.nodes.clear()
+			this.edges.clear()
+			this.nodes.add(this.presets[preset_index].nodes)
+			this.edges.add(this.presets[preset_index].edges)
+		},
+		change_node_color(node_id, color) {
+			let node = this.nodes.get(node_id)
+			node.color = {
+				background: color,
+			}
+			this.nodes.update(node)
+		}
 	}
 }
 </script>
@@ -271,6 +286,15 @@ export default {
 
 				&:hover {
 					background-color: #eee;
+				}
+			}
+
+			.card-active {
+				background-color: #fff;
+				box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+
+				&:hover {
+					background-color: #fff;
 				}
 			}
 		}
