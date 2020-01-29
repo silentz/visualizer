@@ -17,7 +17,7 @@ export default class DFS {
 		if (this.color[current_node] !== 0) {
 			return
 		}
-		if (parent_edge !== -1) {
+		if (parent_edge !== undefined) {
 			this.states.change_edge(parent_edge, 'width', 3)
 		}
 		this.color[current_node] = 1
@@ -32,13 +32,13 @@ export default class DFS {
 		})
 		this.color[current_node] = 2
 		this.states.change_node(current_node, 'color', '#eee')
-		if (parent_edge !== -1) {
+		if (parent_edge !== undefined) {
 			this.states.change_edge(parent_edge, 'width', 1)
 		}
 	}
 
 	run() {
-		this.dfs(this.start_node, -1)
+		this.dfs(this.start_node, undefined)
 		return this.states.states.slice()
 	}
 }
