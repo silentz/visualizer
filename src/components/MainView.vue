@@ -29,15 +29,15 @@
 					</div>
 					
 					<div class='buttons'>
-						<div class='button'>&#10216;&#10216;</div>
-						<div class='button'>&#10216;</div>
+						<div class='button' @click='set_initial_state()'>&#10216;&#10216;</div>
+						<div class='button' @click='set_prev_state()'>&#10216;</div>
 						<div :class='{"button": true, "play": !visualization_active}'
 							@click="visualization_active = !visualization_active">
 							<template v-if="visualization_active">||</template>
 							<template v-else>&#9655;</template>
 						</div>
-						<div class='button'>&#10217;</div>
-						<div class='button'>&#10217;&#10217;</div>
+						<div class='button' @click='set_next_state()'>&#10217;</div>
+						<div class='button' @click='set_last_state()'>&#10217;&#10217;</div>
 						<input type='range' min='0' :max='states.length - 1' class='slider slider-wide'
 							@change='user_state_change()' v-model='current_state'>
 					</div>
@@ -67,7 +67,6 @@ export default {
 			languages_values: ['C++', 'Python', 'Pseudo'],
 			languages_chosen: 0,
 			current_speed: 20, // value in range [0, 100]
-			progress_maximum: 100,
 			visualization_active: false,
 
 			// ===== [State variables] =====
@@ -106,7 +105,8 @@ export default {
 				edges: {
 					color: {
 						color: '#666'
-					}
+					},
+					width: 1
 				}
 			},
 		}
@@ -127,20 +127,45 @@ export default {
 			this.edges.add(this.presets[preset_index].edges)
 			this.states = new this.algorithm(
 				this.presets[preset_index].nodes,
-				this.presets[preset_index].edges, 1).run()
+				this.presets[preset_index].edges, 1, this.network_options).run()
+			this.current_state = 0
+			this.set_state(0)
 		},
 		set_state(state_index) {
 			let state = this.states[state_index]
 			for (let property in state.nodes) {
 				if (Object.prototype.hasOwnProperty.call(state.nodes, property)) {
-					let node = this.nodes.get(state.nodes[property].id)
-					node.color = state.nodes[property].color
-					this.nodes.update(node)
+					this.nodes.update(state.nodes[property])
+				}
+			}
+			for (let property in state.edges) {
+				if (Object.prototype.hasOwnProperty.call(state.edges, property)) {
+					this.edges.update(state.edges[property])
 				}
 			}
 		},
 		user_state_change() {
 			this.set_state(this.current_state)
+		},
+		set_initial_state() {
+			this.current_state = 0
+			this.set_state(0)
+		},
+		set_last_state() {
+			this.current_state = this.states.length - 1
+			this.set_state(this.current_state)
+		},
+		set_next_state() {
+			if (this.current_state + 1 < this.states.length) {
+				this.current_state++
+				this.set_state(this.current_state)
+			}
+		},
+		set_prev_state() {
+			if (this.current_state > 0) {
+				this.current_state--
+				this.set_state(this.current_state)
+			}
 		}
 	}
 }

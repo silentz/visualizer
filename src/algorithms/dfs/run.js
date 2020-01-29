@@ -1,7 +1,8 @@
 import StateGenerator from '@/utils/state.js';
 
+
 export default class DFS {
-	constructor(nodes, edges, start_node) {
+	constructor(nodes, edges, start_node, network_defaults) {
 		this.nodes = nodes.slice()
 		this.edges = edges.slice()
 		this.start_node = start_node
@@ -9,15 +10,18 @@ export default class DFS {
 		nodes.forEach((item) => {
 			this.color[item.id] = 0
 		})
-		this.states = new StateGenerator(nodes, edges)
+		this.states = new StateGenerator(nodes, edges, network_defaults)
 	}
 
 	dfs(current_node, parent_edge) {
 		if (this.color[current_node] !== 0) {
 			return
 		}
+		if (parent_edge !== -1) {
+			this.states.change_edge(parent_edge, 'width', 3)
+		}
 		this.color[current_node] = 1
-		this.states.change_node_color(current_node, '#00ff00')
+		this.states.change_node(current_node, 'color', '#C3FFBC')
 		this.edges.forEach((item) => {
 			if (item.from === current_node) {
 				this.dfs(item.to, item.id)
@@ -27,7 +31,10 @@ export default class DFS {
 			}
 		})
 		this.color[current_node] = 2
-		this.states.change_node_color(current_node, '#0000ff')
+		this.states.change_node(current_node, 'color', '#eee')
+		if (parent_edge !== -1) {
+			this.states.change_edge(parent_edge, 'width', 1)
+		}
 	}
 
 	run() {

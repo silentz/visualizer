@@ -2,51 +2,44 @@ import lodash from "lodash"
 
 
 export default class StateGenerator {
-	constructor(nodes, edges) {
+	constructor(nodes, edges, network_defaults) {
 		this.states = []
-		this.construct_initial_state(nodes, edges)
+		this.construct_initial_state(nodes, edges, network_defaults)
 	}
 
-	construct_initial_state(nodes, edges) {
+	construct_initial_state(nodes, edges, options) {
 		let initial_nodes = {}
 		let initial_edges = {}
-		nodes.forEach(function(item) {
-			initial_nodes[item.id] = {
-				id: item.id,
-				color: {
-					background: '#fff',
-					border: '#666',
-				}
-			}
+		nodes.forEach((item) => {
+			let c_node = lodash.cloneDeep(options.nodes)
+			let result = lodash.assign(c_node, item)
+			initial_nodes[item.id] = lodash.cloneDeep(result)
 		})
-		edges.forEach(function(item) {
-			initial_edges[item.id] = {
-				id: item.id,
-				label: undefined,
-				color: {
-					color: '#666'
-				}
-			}
+		edges.forEach((item) => {
+			let c_edge = lodash.cloneDeep(options.edges)
+			let result = lodash.assign(c_edge, item)
+			initial_edges[item.id] = lodash.cloneDeep(result)
 		})
 		this.states.push({
 			nodes: initial_nodes,
 			edges: initial_edges,
 		})
+		console.log(this.states)
 	}
 
 	clone_last_state() {
 		return lodash.cloneDeep(this.states[this.states.length - 1])
 	}
 
-	change_node_color(node_id, color) {
+	change_node(node_id, property, value) {
 		let last_state_copy = this.clone_last_state()
-		last_state_copy.nodes[node_id].color = color
+		lodash.set(last_state_copy.nodes[node_id], property, value)
 		this.states.push(last_state_copy)
 	}
 
-	change_edge_color(edge_id, color) {
+	change_edge(edge_id, property, value) {
 		let last_state_copy = this.clone_last_state()
-		last_state_copy.edges[edge_id].color.color = color
+		lodash.set(last_state_copy.edges[edge_id], property, value)
 		this.states.push(last_state_copy)
 	}
 }
