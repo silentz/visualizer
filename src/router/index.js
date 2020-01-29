@@ -7,6 +7,7 @@ Vue.use(Router)
 
 // collecting all needed data for algorithms
 // ========== [DFS] ===========
+import DFS from '@/algorithms/dfs/run.js'
 import dfs_preset_1 from '@/algorithms/dfs/presets/1.js'
 import dfs_preset_2 from '@/algorithms/dfs/presets/2.js'
 
@@ -24,7 +25,7 @@ export default new Router({
     		component: MainView,
     		props: {
     			presets: [dfs_preset_1, dfs_preset_2],
-    			algorithm: undefined
+    			algorithm: DFS
     		}
     	}
     ]

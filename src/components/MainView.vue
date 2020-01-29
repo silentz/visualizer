@@ -22,7 +22,7 @@
 				<h2>Controls</h2>
 				<div class='horizontal-control-group'>
 
-					<div class='spped'>
+					<div class='speed'>
 						slow
 						<input type='range' min='0' max='100' class='slider slider-slim' :value="current_speed">
 						fast
@@ -38,7 +38,8 @@
 						</div>
 						<div class='button'>&#10217;</div>
 						<div class='button'>&#10217;&#10217;</div>
-						<input type='range' min='0' :max='progress_maximum' class='slider slider-wide' :value="current_progress">
+						<input type='range' min='0' :max='states.length - 1' class='slider slider-wide'
+							@change='user_state_change()' v-model='current_state'>
 					</div>
 				
 					<div class='languages'>
@@ -66,10 +67,13 @@ export default {
 			languages_values: ['C++', 'Python', 'Pseudo'],
 			languages_chosen: 0,
 			current_speed: 20, // value in range [0, 100]
-			current_progress: 0,
 			progress_maximum: 100,
 			visualization_active: false,
+
+			// ===== [State variables] =====
 			current_preset: 0,
+			current_state: 0,
+			states: [],
 
 			// ===== [Visual objects] =====
 			nodes: undefined,
@@ -98,6 +102,11 @@ export default {
 						align: 'center'
 					},
 					shape: 'circle'
+				},
+				edges: {
+					color: {
+						color: '#666'
+					}
 				}
 			},
 		}
@@ -116,13 +125,22 @@ export default {
 			this.edges.clear()
 			this.nodes.add(this.presets[preset_index].nodes)
 			this.edges.add(this.presets[preset_index].edges)
+			this.states = new this.algorithm(
+				this.presets[preset_index].nodes,
+				this.presets[preset_index].edges, 1).run()
 		},
-		change_node_color(node_id, color) {
-			let node = this.nodes.get(node_id)
-			node.color = {
-				background: color,
+		set_state(state_index) {
+			let state = this.states[state_index]
+			for (let property in state.nodes) {
+				if (Object.prototype.hasOwnProperty.call(state.nodes, property)) {
+					let node = this.nodes.get(state.nodes[property].id)
+					node.color = state.nodes[property].color
+					this.nodes.update(node)
+				}
 			}
-			this.nodes.update(node)
+		},
+		user_state_change() {
+			this.set_state(this.current_state)
 		}
 	}
 }
