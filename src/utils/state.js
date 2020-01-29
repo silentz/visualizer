@@ -24,7 +24,6 @@ export default class StateGenerator {
 			nodes: initial_nodes,
 			edges: initial_edges,
 		})
-		console.log(this.states)
 	}
 
 	clone_last_state() {

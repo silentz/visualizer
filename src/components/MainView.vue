@@ -24,7 +24,7 @@
 
 					<div class='speed'>
 						slow
-						<input type='range' min='0' max='100' class='slider slider-slim' :value="current_speed">
+						<input type='range' min='0' max='100' class='slider slider-slim' v-model="current_speed">
 						fast
 					</div>
 					
@@ -32,7 +32,7 @@
 						<div class='button' @click='set_initial_state()'>&#10216;&#10216;</div>
 						<div class='button' @click='set_prev_state()'>&#10216;</div>
 						<div :class='{"button": true, "play": !visualization_active}'
-							@click="visualization_active = !visualization_active">
+							@click="start_visualization()">
 							<template v-if="visualization_active">||</template>
 							<template v-else>&#9655;</template>
 						</div>
@@ -156,15 +156,33 @@ export default {
 			this.set_state(this.current_state)
 		},
 		set_next_state() {
-			if (this.current_state + 1 < this.states.length) {
+			if (parseInt(this.current_state) + 1 < this.states.length) {
 				this.current_state++
 				this.set_state(this.current_state)
 			}
 		},
 		set_prev_state() {
-			if (this.current_state > 0) {
+			if (parseInt(this.current_state) > 0) {
 				this.current_state--
 				this.set_state(this.current_state)
+			}
+		},
+		start_visualization() {
+			if (this.visualization_active === true) {
+				this.visualization_active = false
+			} else {
+				this.visualization_active = true
+				this.run_step()
+			}
+		},
+		run_step() {
+			if (this.visualization_active) {
+				this.set_next_state()
+				if (parseInt(this.current_state) + 1 < this.states.length) {
+					setTimeout(this.run_step, 21000 / (parseInt(this.current_speed) + 6))
+				} else {
+					this.visualization_active = false
+				}
 			}
 		}
 	}
