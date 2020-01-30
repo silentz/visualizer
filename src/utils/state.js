@@ -23,11 +23,16 @@ export default class StateGenerator {
 		this.states.push({
 			nodes: initial_nodes,
 			edges: initial_edges,
+			lines: [0, 0, 0],
 		})
 	}
 
 	clone_last_state() {
 		return lodash.cloneDeep(this.states[this.states.length - 1])
+	}
+
+	last_index() {
+		return (this.states.length - 1);
 	}
 
 	new_change_node(node_id, property, value) {
@@ -39,6 +44,20 @@ export default class StateGenerator {
 	new_change_edge(edge_id, property, value) {
 		let last_state_copy = this.clone_last_state()
 		lodash.set(last_state_copy.edges[edge_id], property, value)
+		this.states.push(last_state_copy)
+	}
+
+	same_change_node(node_id, property, value) {
+		lodash.set(this.states[this.last_index()].nodes[node_id], property, value)
+	}
+
+	same_change_edge(edge_id, property, value) {
+		lodash.set(this.states[this.last_index()].edges[edge_id], property, value)
+	}
+
+	change_code_line(lang_lines) {
+		let last_state_copy = this.clone_last_state()
+		last_state_copy.lines = lodash.cloneDeep(lang_lines)
 		this.states.push(last_state_copy)
 	}
 }

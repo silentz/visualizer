@@ -13,27 +13,35 @@ export default class DFS {
 		this.states = new StateGenerator(nodes, edges, network_defaults)
 	}
 
-	dfs(current_node, parent_edge) {
+	dfs(current_node, parent_id) {
+		this.states.change_code_line([1, 0, 0])
 		if (this.color[current_node] !== 0) {
+			this.states.change_code_line([2, 0, 0])
 			return
 		}
-		if (parent_edge !== undefined) {
-			this.states.new_change_edge(parent_edge, 'width', 3)
-		}
+		this.states.change_code_line([3, 0, 0])
 		this.color[current_node] = 1
-		this.states.new_change_node(current_node, 'color', '#C3FFBC')
+		this.states.same_change_node(current_node, 'color', '#C3FFBC')
+		this.states.change_code_line([4, 0, 0])
 		this.edges.forEach((item) => {
 			if (item.from === current_node) {
+				this.states.change_code_line([5, 0, 0])
+				this.states.change_code_line([0, 0, 0])
+				this.states.same_change_edge(item.id, 'width', 3)
 				this.dfs(item.to, item.id)
 			}
 			if (item.to === current_node) {
+				this.states.change_code_line([5, 0, 0])
+				this.states.change_code_line([0, 0, 0])
+				this.states.same_change_edge(item.id, 'width', 3)
 				this.dfs(item.from, item.id)
 			}
 		})
+		this.states.change_code_line([6, 0, 0])
 		this.color[current_node] = 2
-		this.states.new_change_node(current_node, 'color', '#eee')
-		if (parent_edge !== undefined) {
-			this.states.new_change_edge(parent_edge, 'width', 1)
+		this.states.same_change_node(current_node, 'color', '#eee')
+		if (parent_id !== undefined) {
+			this.states.same_change_edge(parent_id, 'width', 1)
 		}
 	}
 
@@ -48,18 +56,17 @@ export default class DFS {
 
 	static get_language_lines(index) {
 		const lang = this.languages()[index]
-		if (lang === 'Pseudo') {
-			return [
+		const lines = {
+			'Pseudo': [
 				'dfs(node):',
 				'  if node is already visited:',
 				'    return',
 				'  mark node as visited',
-				'  for t in "unvisited neighbours":',
+				'  for t in "node neighbours":',
 				'     dfs(t)',
-			]
-		}
-		if (lang === 'C++') {
-			return [
+				'  exit node'
+			],
+			'C++': [
 				'void dfs(const int node) {',
 				'  if (visited[node]) {',
 				'    return;',
@@ -69,10 +76,8 @@ export default class DFS {
 				'    dfs(t);',
 				'  }',
 				'}',
-			]
-		}
-		if (lang === 'Python') {
-			return [
+			],
+			'Python': [
 				'def dfs(node):',
 				'  if visited[node]:',
 				'    return',
@@ -81,5 +86,6 @@ export default class DFS {
 				'     dfs(t)',
 			]
 		}
+		return lines[lang]
 	}
 }

@@ -151,6 +151,7 @@ export default {
 					this.edges.update(state.edges[property])
 				}
 			}
+			this.current_code_line = state.lines[this.language_chosen]
 		},
 		user_state_change() {
 			this.set_state(this.current_state)
