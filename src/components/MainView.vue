@@ -196,6 +196,7 @@ export default {
 		},
 		choose_language(index) {
 			this.language_chosen = index
+			this.set_state(this.current_state)
 		}
 	}
 }
