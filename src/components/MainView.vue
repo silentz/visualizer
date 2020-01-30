@@ -17,6 +17,14 @@
 			</div>
 			<div class='panel code'>
 				<h2>Code</h2>
+				<div class='code-lines'>
+					<template v-for='(line, index) in algorithm.get_language_lines(language_chosen)'>
+						<div :class='{"cursor-span": true, "chosen-cursor": index == current_code_line}'>
+							<template v-if='index == current_code_line'>&rarr;</template>
+						</div>
+						<div :class='{"code-line": true, "chosen-line": index == current_code_line}'>{{ line }}</div>
+					</template>
+				</div>
 			</div>
 			<div class='panel controls'>
 				<h2>Controls</h2>
@@ -43,9 +51,9 @@
 					</div>
 				
 					<div class='languages'>
-						<div v-for='(language, index) in languages_values'
-							:class='{"button": true, "radio": true, "radio-chosen": (index == languages_chosen)}'
-							@click="languages_chosen = index">
+						<div v-for='(language, index) in algorithm.languages()'
+							:class='{"button": true, "radio": true, "radio-chosen": (index == language_chosen)}'
+							@click="choose_language(index)">
 							{{ language }}
 						</div>
 					</div>
@@ -64,14 +72,14 @@ export default {
 	props: ['presets', 'algorithm'],
 	data: () => {
 		return {
-			languages_values: ['C++', 'Python', 'Pseudo'],
-			languages_chosen: 0,
+			language_chosen: 0,
 			current_speed: 20, // value in range [0, 100]
 			visualization_active: false,
 
 			// ===== [State variables] =====
 			current_preset: 0,
 			current_state: 0,
+			current_code_line: 0,
 			states: [],
 
 			// ===== [Visual objects] =====
@@ -184,6 +192,9 @@ export default {
 					this.visualization_active = false
 				}
 			}
+		},
+		choose_language(index) {
+			this.language_chosen = index
 		}
 	}
 }
@@ -191,9 +202,19 @@ export default {
 
 <style lang='scss'>
 @import url('https://fonts.googleapis.com/css?family=Barlow&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Source+Code+Pro&display=swap');
+
+$main-background-color: #fff;
+$light-shadow: rgba(255, 255, 255, 0.5);
+$dark-shadow: rgba(0, 0, 0, 0.3);
+$shadow-x: 5px;
+$shadow-y: 3px;
+$shadow-blur: 5px;
+$lgreen: rgba(195, 255, 188, 0.6);
 
 .mainview {
 	height: 100%;
+	background-color: $main-background-color;
 
 	.paneltable {
 		height: 100%;
@@ -290,7 +311,7 @@ export default {
 			align-items: center;
 			border: 1px solid #eee;
 			border-radius: 5px;
-			box-shadow: 0 3px 5px rgba(0, 0, 0, 0.3);
+			box-shadow: $shadow-x $shadow-y $shadow-blur $dark-shadow;
 			margin: 0 5px;
 			width: 30px;
 			height: 30px;
@@ -363,6 +384,40 @@ export default {
 
 	.code {
 		grid-area: code;
+		
+		$cursor-width: 30px;
+		$cursor-height: 20px;
+
+		.code-lines {
+			display: grid;
+			grid-template-columns: $cursor-width auto;
+			padding-top: 10px;
+
+			.code-line {
+				white-space: pre;
+				font-family: 'Source Code Pro', monospace;
+				height: $cursor-height;
+				font-size: 0.95rem;
+			}
+
+			.cursor-span {
+				width: $cursor-width;
+				height: $cursor-height;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+			}
+
+			.chosen-cursor {
+				background-color: $lgreen;
+				border-radius: 5px 0 0 5px;
+			}
+
+			.chosen-line {
+				background-color: $lgreen;
+				border-radius: 0 5px 5px 0;
+			}
+		}
 	}
 
 	.viewer {
@@ -409,12 +464,12 @@ export default {
 	}
 
 	.panel {
-		border: 1px solid #fff;
+		border: 1px solid #eee;
 		margin: 10px;
 		padding: 10px;
 		border-radius: 10px;
-		box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
-		background-color: white;
+		box-shadow: $shadow-x $shadow-y $shadow-blur $dark-shadow;
+		background-color: $main-background-color;
 
 		font-family: 'Barlow', sans-serif;
 		color: #aaa;
