@@ -110,7 +110,9 @@ export default {
 						align: 'center'
 					},
 					shape: 'circle',
-					chosen: false
+					chosen: false,
+					physics: false,
+					fixed: true,
 				},
 				edges: {
 					color: {
