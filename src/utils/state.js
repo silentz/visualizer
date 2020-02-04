@@ -35,6 +35,16 @@ export default class StateGenerator {
 		return (this.states.length - 1);
 	}
 
+	get_node_state(node_id, property) {
+		let current_state = this.clone_last_state()
+		return lodash.get(current_state.nodes[node_id], property)
+	}
+
+	get_edge_state(edge_id, property) {
+		let current_state = this.clone_last_state()
+		return lodash.get(current_state.edges[edge_id], property)
+	}
+
 	new_change_node(node_id, property, value) {
 		let last_state_copy = this.clone_last_state()
 		lodash.set(last_state_copy.nodes[node_id], property, value)
