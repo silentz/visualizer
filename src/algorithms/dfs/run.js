@@ -21,13 +21,13 @@ export default class DFS {
 
 	dfs(current_node) {
 		this.states.same_change_node(current_node, 'color.background', this.CURRENT_COLOR)
-		this.states.change_code_line([1, 0, 0])
+		this.states.change_code_line([1, 1, 1])
 		this.color[current_node] = 1
-		this.states.change_code_line([2, 0, 0])
+		this.states.change_code_line([2, 2, 2])
 		this.edges.forEach((item) => {
 			if (item.from === current_node || item.to == current_node) {
 				this.states.same_change_edge(item.id, 'width', 3)
-				this.states.change_code_line([3, 0, 0])
+				this.states.change_code_line([3, 3, 3])
 				let start = item.from
 				let finish = item.to
 				if (current_node === item.to) {
@@ -36,7 +36,7 @@ export default class DFS {
 				}
 				if (this.color[finish] === 0) {
 					this.states.same_change_edge(item.id, 'color', this.ACCEPT_EDGE)
-					this.states.change_code_line([4, 0, 0])
+					this.states.change_code_line([4, 4, 4])
 					this.states.same_change_node(finish, 'color.background', this.CURRENT_COLOR)
 					this.states.change_code_line([0, 0, 0])
 					this.states.same_change_node(current_node, 'color.background', this.ACTIVE_COLOR)
@@ -46,13 +46,13 @@ export default class DFS {
 					this.states.same_change_node(current_node, 'color.background', this.CURRENT_COLOR)
 				} else {
 					this.states.same_change_edge(item.id, 'color', this.REJECT_EDGE)
-					this.states.change_code_line([2, 0, 0])
+					this.states.change_code_line([2, 2, 2])
 					this.states.same_change_edge(item.id, 'color', this.EDGE_DEFAULT)
 					this.states.same_change_edge(item.id, 'width', 1)
 				}
 			}
 		})
-		this.states.change_code_line([5, 0, 0])
+		this.states.change_code_line([5, 7, 5])
 		this.states.same_change_node(current_node, 'color', this.VISITED_COLOR)
 	}
 
@@ -78,23 +78,21 @@ export default class DFS {
 			],
 			'C++': [
 				'void dfs(const int node) {',
-				'  if (visited[node]) {',
-				'    return;',
-				'  }',
 				'  visited[node] = true;',
 				'  for (auto t: neighbours[node]) {',
-				'    dfs(t);',
+				'    if (!visited[node]) {',
+				'      dfs(t);',
+				'    }',
 				'  }',
 				'  return;',
 				'}',
 			],
 			'Python': [
 				'def dfs(node):',
-				'  if visited[node]:',
-				'    return',
 				'  visited[node] = true',
 				'  for t in neighbours[node]:',
-				'     dfs(t)',
+				'     if is not visited[t]:',
+				'       dfs(t)',
 				'  return',
 			]
 		}
