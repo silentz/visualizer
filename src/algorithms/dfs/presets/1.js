@@ -2,7 +2,7 @@ import center from '@/utils/center.js';
 
 export default {
 	title: 'Example 1',
-	description: 'Simple tree example',
+	description: 'Bamboo tree',
 	default_start_node: 1,
 	nodes: [
 		{ id: 1, label: center("1"), x: -140, y: -80 },
