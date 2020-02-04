@@ -5,7 +5,7 @@
 				<h2>Options</h2>
 				<div class='option-cards'>
 					<div v-for='(preset, index) in presets' :class='{"card": true, "card-active": (index == current_preset)}'
-							@click="set_preset(index)">
+							@click="set_preset(index, true)">
 						<div class='card-header'>{{ preset.title }}</div>
 						<div class='card-context'>{{ preset.description }}</div>
 					</div>
@@ -80,6 +80,7 @@ export default {
 			current_preset: 0,
 			current_state: 0,
 			current_code_line: 0,
+			start_node: 1,
 			states: [],
 
 			// ===== [Visual objects] =====
@@ -108,13 +109,15 @@ export default {
 						face: "sans-serif",
 						align: 'center'
 					},
-					shape: 'circle'
+					shape: 'circle',
+					chosen: false
 				},
 				edges: {
 					color: {
 						color: '#666'
 					},
-					width: 1
+					width: 1,
+					chosen: false
 				}
 			},
 		}
@@ -124,18 +127,30 @@ export default {
 		this.edges = new DataSet([])
 		this.network = new Network(document.getElementById("view-container"),
 			{ nodes: this.nodes, edges: this.edges}, this.network_options)
-		this.set_preset(0)
+		this.network.on('click', (data) => {
+			if (data.nodes.length == 1 && !this.visualization_active) {
+				let chosen_node = data.nodes[0]
+				this.start_node = chosen_node
+				this.set_preset(this.current_preset, false)
+			}
+		})
+		this.set_preset(0, true)
 	},
 	methods: {
-		set_preset(preset_index) {
+		set_preset(preset_index, default_node) {
 			this.current_preset = preset_index
+			if (default_node) {
+				this.start_node = this.presets[preset_index].default_start_node
+			}
 			this.nodes.clear()
 			this.edges.clear()
 			this.nodes.add(this.presets[preset_index].nodes)
 			this.edges.add(this.presets[preset_index].edges)
 			this.states = new this.algorithm(
 				this.presets[preset_index].nodes,
-				this.presets[preset_index].edges, 1, this.network_options).run()
+				this.presets[preset_index].edges,
+				this.start_node,
+				this.network_options).run()
 			this.current_state = 0
 			this.set_state(0)
 		},

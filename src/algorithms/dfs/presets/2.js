@@ -3,6 +3,7 @@ import center from '@/utils/center.js';
 export default {
 	title: 'Example 2',
 	description: 'Binary tree',
+	default_start_node: 1,
 	nodes: [
 		{ id: 1, label: center("1") },
 		{ id: 2, label: center("2") },
