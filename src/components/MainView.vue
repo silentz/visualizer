@@ -220,8 +220,7 @@ export default {
 </script>
 
 <style lang='scss'>
-@import url('https://fonts.googleapis.com/css?family=Barlow&display=swap');
-@import url('https://fonts.googleapis.com/css?family=Source+Code+Pro&display=swap');
+@import "@/assets/fonts.scss";
 
 $main-background-color: #fff;
 $light-shadow: rgba(255, 255, 255, 0.5);
