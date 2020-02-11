@@ -16,14 +16,23 @@
 				<div id='view-container'/>
 			</div>
 			<div class='panel code'>
-				<h2>Code</h2>
-				<div class='code-lines'>
-					<template v-for='(line, index) in algorithm.get_language_lines(language_chosen)'>
-						<div :class='{"cursor-span": true, "chosen-cursor": index == current_code_line}'>
-							<template v-if='index == current_code_line'>&rarr;</template>
-						</div>
-						<div :class='{"code-line": true, "chosen-line": index == current_code_line}'>{{ line }}</div>
-					</template>
+				<div class='wrapper'>
+					<h2>Code</h2>
+					<div class='code-lines'>
+						<template v-for='(line, index) in algorithm.get_language_lines(language_chosen)'>
+							<div :class='{"cursor-span": true, "chosen-cursor": index == current_code_line}'>
+								<template v-if='index == current_code_line'>&rarr;</template>
+							</div>
+							<div :class='{"code-line": true, "chosen-line": index == current_code_line}'>{{ line }}</div>
+						</template>
+					</div>
+				</div>
+				<div class='code-annotations'>
+					<div class='annotation'>Going node 1</div>
+					<div class='annotation'>Going node 2</div>
+					<div class='annotation'>Goint node 3</div>
+					<div class='annotation'>Goint node 4</div>
+					<div class='annotation'>Going node 5</div>
 				</div>
 			</div>
 			<div class='panel controls'>
@@ -402,6 +411,10 @@ $lgreen: rgba(195, 255, 188, 0.6);
 
 	.code {
 		grid-area: code;
+		display: flex;
+		flex-direction: column;
+		justify-content: space-between;
+		align-items: flex-start;
 		
 		$cursor-width: 30px;
 		$cursor-height: 20px;
@@ -434,6 +447,44 @@ $lgreen: rgba(195, 255, 188, 0.6);
 			.chosen-line {
 				background-color: $lgreen;
 				border-radius: 0 5px 5px 0;
+			}
+		}
+
+		.code-annotations {
+			display: flex;
+			flex-direction: column-reverse;
+			justify-content: flex-start;
+			align-items: flex-start;
+			padding-bottom: 10px;
+			padding-left: 10px;
+
+			.annotation {
+				margin-top: 10px;
+
+				&:nth-child(1) {
+					font-size: 1.6rem;
+					opacity: 1;
+				}
+
+				&:nth-child(2) {
+					font-size: 1rem;
+					opacity: 1;
+				}
+
+				&:nth-child(3) {
+					font-size: 1rem;
+					opacity: 0.7;
+				}
+
+				&:nth-child(4) {
+					font-size: 1rem;
+					opacity: 0.5;
+				}
+
+				&:nth-child(5) {
+					font-size: 1rem;
+					opacity: 0.3;
+				}
 			}
 		}
 	}
