@@ -28,11 +28,9 @@
 					</div>
 				</div>
 				<div class='code-annotations'>
-					<div class='annotation'>Going node 1</div>
-					<div class='annotation'>Going node 2</div>
-					<div class='annotation'>Goint node 3</div>
-					<div class='annotation'>Goint node 4</div>
-					<div class='annotation'>Going node 5</div>
+					<div class='annotation' v-for='comment in comments'>
+						{{ comment }}
+					</div>
 				</div>
 			</div>
 			<div class='panel controls'>
@@ -178,6 +176,7 @@ export default {
 				}
 			}
 			this.current_code_line = state.lines[this.language_chosen]
+			this.comments = state.comments.slice(Math.max(state.comments.length - 5, 0)).reverse()
 		},
 		user_state_change() {
 			this.set_state(this.current_state)

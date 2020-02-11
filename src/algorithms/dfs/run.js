@@ -21,9 +21,12 @@ export default class DFS {
 
 	dfs(current_node) {
 		this.states.same_change_node(current_node, 'color.background', this.CURRENT_COLOR)
+		this.states.same_set_comment(`Entering node ${current_node}`)
 		this.states.change_code_line([1, 1, 1])
+		this.states.same_set_comment(`Mark node ${current_node} as visited`)
 		this.color[current_node] = 1
 		this.states.change_code_line([2, 2, 2])
+		this.states.same_set_comment(`Iterating over neighbours of node ${current_node}`)
 		this.edges.forEach((item) => {
 			if (item.from === current_node || item.to == current_node) {
 				this.states.same_change_edge(item.id, 'width', 3)
@@ -36,8 +39,10 @@ export default class DFS {
 				}
 				if (this.color[finish] === 0) {
 					this.states.same_change_edge(item.id, 'color', this.ACCEPT_EDGE)
+					this.states.same_set_comment(`Node ${finish} is not visited`)
 					this.states.change_code_line([4, 4, 4])
 					this.states.same_change_node(finish, 'color.background', this.CURRENT_COLOR)
+					this.states.same_set_comment(`Going to visit node ${finish}`)
 					this.states.change_code_line([0, 0, 0])
 					this.states.same_change_node(current_node, 'color.background', this.ACTIVE_COLOR)
 					this.states.same_change_edge(item.id, 'width', 1)
@@ -45,14 +50,17 @@ export default class DFS {
 					this.dfs(finish)
 					this.states.same_change_node(current_node, 'color.background', this.CURRENT_COLOR)
 				} else {
+					this.states.same_set_comment(`Node ${finish} is already visited`)
 					this.states.same_change_edge(item.id, 'color', this.REJECT_EDGE)
 					this.states.change_code_line([2, 2, 2])
+					this.states.same_set_comment(`Continue iterating`)
 					this.states.same_change_edge(item.id, 'color', this.EDGE_DEFAULT)
 					this.states.same_change_edge(item.id, 'width', 1)
 				}
 			}
 		})
 		this.states.change_code_line([5, 7, 5])
+		this.states.same_set_comment(`Exiting node ${current_node}`)
 		this.states.same_change_node(current_node, 'color', this.VISITED_COLOR)
 	}
 

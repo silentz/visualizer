@@ -24,6 +24,7 @@ export default class StateGenerator {
 			nodes: initial_nodes,
 			edges: initial_edges,
 			lines: [0, 0, 0],
+			comments: [],
 		})
 	}
 
@@ -55,6 +56,10 @@ export default class StateGenerator {
 		let last_state_copy = this.clone_last_state()
 		lodash.set(last_state_copy.edges[edge_id], property, value)
 		this.states.push(last_state_copy)
+	}
+
+	same_set_comment(comment) {
+		this.states[this.last_index()].comments.push(comment)
 	}
 
 	same_change_node(node_id, property, value) {
