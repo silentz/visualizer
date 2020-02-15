@@ -1,14 +1,22 @@
 <template>
 	<div class='mainview'>
+		<modal name='create-modal'>
+			test
+		</modal>
 		<div class='paneltable'>
 			<div class='panel options'>
-				<h2>Options</h2>
-				<div class='option-cards'>
-					<div v-for='(preset, index) in presets' :class='{"card": true, "card-active": (index == current_preset)}'
-							@click="set_preset(index, true)">
-						<div class='card-header'>{{ preset.title }}</div>
-						<div class='card-context'>{{ preset.description }}</div>
+				<div class='wrapper'>
+					<h2>Options</h2>
+					<div class='option-cards'>
+						<div v-for='(preset, index) in presets' :class='{"card": true, "card-active": (index == current_preset)}'
+								@click="set_preset(index, true)">
+							<div class='card-header'>{{ preset.title }}</div>
+							<div class='card-context'>{{ preset.description }}</div>
+						</div>
 					</div>
+				</div>
+				<div class='add'>
+					<div class='button' @click='$modal.show("create-modal")'>create</div>
 				</div>
 			</div>
 			<div class='panel viewer'>
@@ -255,6 +263,30 @@ $lgreen: rgba(195, 255, 188, 0.6);
 			"controls controls controls";
 	}
 
+	.button {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		border: 1px solid #eee;
+		border-radius: 5px;
+		box-shadow: $shadow-x $shadow-y $shadow-blur $dark-shadow;
+		margin: 0 5px;
+		width: 30px;
+		height: 30px;
+		padding: 2px;
+		user-select: none;
+		-webkit-user-select: none;
+		font-weight: bold;
+		box-sizing: border-box;
+		cursor: default;
+
+		&:active {
+			box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.3);
+			padding-top: 4px;
+			padding-bottom: 0px;
+		}
+	}
+
 	.controls {
 		grid-area: controls;
 		display: flex;
@@ -331,30 +363,6 @@ $lgreen: rgba(195, 255, 188, 0.6);
 			}
 		}
 
-		.button {
-			display: flex;
-			justify-content: center;
-			align-items: center;
-			border: 1px solid #eee;
-			border-radius: 5px;
-			box-shadow: $shadow-x $shadow-y $shadow-blur $dark-shadow;
-			margin: 0 5px;
-			width: 30px;
-			height: 30px;
-			padding: 2px;
-			user-select: none;
-			-webkit-user-select: none;
-			font-weight: bold;
-			box-sizing: border-box;
-			cursor: default;
-
-			&:active {
-				box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.3);
-				padding-top: 4px;
-				padding-bottom: 0px;
-			}
-		}
-
 		.speed {
 			display: flex;
 			flex-direction: row;
@@ -365,6 +373,26 @@ $lgreen: rgba(195, 255, 188, 0.6);
 
 	.options {
 		grid-area: options;
+		display: flex;
+		flex-direction: column;
+		justify-content: space-between;
+		align-items: flex-start;
+
+		.wrapper {
+			width: 100%;
+		}
+
+		.add {
+			width: 100%;
+			display: flex;
+			flex-direction: row;
+			justify-content: center;
+			align-items: center;
+
+			.button {
+				width: 100px;
+			}
+		}
 
 		.option-cards {
 			display: flex;
@@ -372,6 +400,7 @@ $lgreen: rgba(195, 255, 188, 0.6);
 			justify-content: flex-start;
 			align-items: center;
 			padding-top: 10px;
+			width: 100%;
 
 			.card {
 				padding: 5px;
