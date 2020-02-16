@@ -237,6 +237,12 @@ export default {
 				nodes: this.add_nodes.get(this.add_nodes.getIds()),
 				edges: this.add_edges.get(this.add_edges.getIds()),
 			}
+			if (result.title.length === 0) {
+				result.title = 'New example'
+			}
+			if (result.description.length === 0) {
+				result.description = "No description"
+			}
 			this.presets_active.push(result)
 			this.$modal.hide('create-modal')
 		},
