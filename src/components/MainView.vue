@@ -377,6 +377,7 @@ export default {
 
 <style lang='scss'>
 @import "@/assets/fonts.scss";
+@import "@/assets/styles.scss";
 
 $main-background-color: #fff;
 $light-shadow: rgba(255, 255, 255, 0.5);
@@ -513,30 +514,6 @@ $lgreen: rgba(195, 255, 188, 0.6);
 		grid-template-areas:
 			"options  viewer   code"
 			"controls controls controls";
-	}
-
-	.button {
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		border: 1px solid #eee;
-		border-radius: 5px;
-		box-shadow: $shadow-x $shadow-y $shadow-blur $dark-shadow;
-		margin: 0 5px;
-		width: 30px;
-		height: 30px;
-		padding: 2px;
-		user-select: none;
-		-webkit-user-select: none;
-		font-weight: bold;
-		box-sizing: border-box;
-		cursor: default;
-
-		&:active {
-			box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.3);
-			padding-top: 4px;
-			padding-bottom: 0px;
-		}
 	}
 
 	.controls {
