@@ -5,7 +5,7 @@ It has modular structure and is easy to extend with new algorithms. The applicat
 [&laquo;Higher school of economics&raquo;](https://www.hse.ru/ba/ami) project course. Here is a main
 view screenshot:
 
-![view](/readme_data/view.jpg)
+![view](/readme_data/view.png)
 
 ## Features
 
