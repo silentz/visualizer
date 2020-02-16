@@ -1,7 +1,31 @@
 <template>
 	<div class='mainview'>
-		<modal name='create-modal'>
-			test
+		<modal name='create-modal' @opened='before_open' :height="500">
+			<div class='modal-wrapper'>
+				<p class='modal-label'>Title<br><input type='text' class='modal-input' v-model='title'></p>
+				<p class='modal-label'>Description<br><input type='text' class='modal-input' v-model='description'></p>
+				<p class='modal-label'>View</p>
+				<div class='horizontal'>
+					<div id='add-network' class='panel'></div>
+					<div class='buttons'>
+						<div class='upper'>
+							<div :class='{"button": true, "radio-chosen": (mode_chosen == 1)}'
+									@click="choose_mode(1)">add node</div>
+							<div :class='{"button": true, "radio-chosen": (mode_chosen == 2)}'
+									@click="choose_mode(2)">add edge</div>
+							<div :class='{"button": true, "radio-chosen": (mode_chosen == 3)}'
+									@click="choose_mode(3)">select</div>
+						</div>
+						<div class='lower'>
+							<div class='button delete' @click="delete_selected()" v-show="(mode_chosen == 3)">delete</div>
+						</div>
+					</div>
+				</div>
+				<div class='final-buttons'>
+					<div class='button cancel' @click='$modal.hide("create-modal")'>Cancel</div>
+					<div class='button confirm'>Confirm</div>
+				</div>
+			</div>
 		</modal>
 		<div class='paneltable'>
 			<div class='panel options'>
@@ -87,16 +111,24 @@ export default {
 	props: ['presets', 'algorithm'],
 	data: () => {
 		return {
+			// ===== [Language values] =====
 			language_chosen: 0,
 			current_speed: 20, // value in range [0, 100]
-			visualization_active: false,
+			
+			// ===== [Input] =====
+			mode_chosen: 1,
+			// add_network: undefined,
+			title: '',
+			description: '',
 
 			// ===== [State variables] =====
+			visualization_active: false,
 			current_preset: 0,
 			current_state: 0,
 			current_code_line: 0,
 			start_node: 1,
 			states: [],
+			comments: [],
 
 			// ===== [Visual objects] =====
 			nodes: undefined,
@@ -137,6 +169,40 @@ export default {
 					chosen: false
 				}
 			},
+			add_network_options: {
+				interaction: {
+					dragView: false,
+					dragNodes: true,
+					zoomView: false
+				},
+				nodes: {
+					color: {
+						border: "#666",
+						background: "#fff",
+						highlight: {
+							border: "#666",
+							background: "#ccc",
+						}
+					},
+					font: {
+						color: "#666",
+						size: 16,
+						face: "sans-serif",
+						align: 'center'
+					},
+					shape: 'circle',
+					chosen: true,
+					physics: false,
+					fixed: false,
+				},
+				edges: {
+					color: {
+						color: '#666'
+					},
+					width: 1,
+					chosen: true
+				}
+			}
 		}
 	},
 	mounted: function() {
@@ -154,6 +220,43 @@ export default {
 		this.set_preset(0, true)
 	},
 	methods: {
+		before_open() {
+			this.title = ''
+			this.description = ''
+			this.mode_chosen = 1
+			this.add_network = new Network(
+				document.getElementById("add-network"), {
+					nodes: [],
+					edges: [],
+				},
+				this.add_network_options
+			)
+			this.add_network.addNodeMode()
+			// this.add_network.on('click', this.change_mode)
+			this.add_network.on('release', this.change_mode)
+		},
+		change_mode() {
+			this.add_network.disableEditMode()
+			switch(this.mode_chosen) {
+				case 1:
+					this.add_network.unselectAll()
+					this.add_network.addNodeMode()
+					break
+				case 2:
+					this.add_network.unselectAll()
+					this.add_network.addEdgeMode()
+					break
+				case 3:
+					break
+			}
+		},
+		choose_mode(index) {
+			this.mode_chosen = index
+			this.change_mode()
+		},
+		delete_selected() {
+			this.add_network.deleteSelected()
+		},
 		set_preset(preset_index, default_node) {
 			this.current_preset = preset_index
 			if (default_node) {
@@ -249,6 +352,118 @@ $lgreen: rgba(195, 255, 188, 0.6);
 .mainview {
 	height: 100%;
 	background-color: $main-background-color;
+	font-family: 'Barlow', sans-serif;
+	color: #aaa;
+
+	.modal-wrapper {
+		display: flex;
+		flex-direction: column;
+		justify-content: flex-start;
+		align-items: flex-start;
+		width: 100%;
+		height: 100%;
+		box-sizing: border-box;
+
+		.horizontal {
+			display: flex;
+			flex-direction: row;
+			justify-content: flex-start;
+			align-items: center;
+			width: 100%;
+			height: 100%;
+			padding: 10px;
+			box-sizing: border-box;
+			padding: 10px;
+		}
+
+		.modal-label {
+			margin: 0;
+			padding-left: 14px;
+			padding-top: 10px;
+		}
+
+		.modal-input {
+			outline: none;
+			border: none;
+			background-color: rgba(0, 0, 0, 0.05);
+			font-size: 1rem;
+			padding: 5px;
+			border-radius: 5px;
+			color: #888;
+		}
+
+		.final-buttons {
+			display: flex;
+			flex-direction: row;
+			justify-content: flex-start;
+			align-items: center;
+			width: 100%;
+			min-height: 40px;
+			box-sizing: border-box;
+			padding: 0 10px;
+			margin-bottom: 10px;
+
+			.button {
+				width: 100px;
+			}
+
+			.confirm {
+				background-color: rgba(0, 255, 0, 0.05);
+			}
+
+			.cancel {
+				background-color: rgba(255, 0, 0, 0.05);
+			}
+		}
+
+		#add-network {
+			display: block;
+			flex-grow: 1;
+			height: 100%;
+			width: 100%;
+			margin: 5px;
+			background-color: #fff;
+			box-sizing: border-box;
+			overflow: hidden;
+		}
+
+		.buttons {
+			display: flex;
+			flex-direction: column;
+			justify-content: space-between;
+			align-items: center;
+			height: 100%;
+
+			.upper {
+				display: flex;
+				flex-direction: column;
+				justify-content: flex-start;
+				align-items: center;
+			}
+
+			.lower {
+				display: flex;
+				flex-direction: column;
+				justify-content: flex-start;
+				align-items: center;
+			}
+
+			.delete {
+				margin: 0 !important;
+			}
+
+			.radio-chosen {
+				box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.3) !important;
+				padding-top: 4px !important;
+				padding-bottom: 0px !important;
+			}
+
+			.button {
+				width: 100px;
+				margin-bottom: 10px;
+			}
+		}
+	}
 
 	.paneltable {
 		height: 100%;
@@ -567,9 +782,6 @@ $lgreen: rgba(195, 255, 188, 0.6);
 		border-radius: 10px;
 		box-shadow: $shadow-x $shadow-y $shadow-blur $dark-shadow;
 		background-color: $main-background-color;
-
-		font-family: 'Barlow', sans-serif;
-		color: #aaa;
 
 		h2 {
 			font-size: 1em;
