@@ -46,6 +46,12 @@
 			<div class='panel viewer'>
 				<h2>View</h2>
 				<div id='view-container'/>
+				<div class='colors'>
+					<div class='color' v-for='color in algorithm.colors()'>
+						<div class='color-circle' :style='"background-color: " + color.value'/>
+						<div class='color-name'>{{ color.name }}</div>
+					</div>
+				</div>
 			</div>
 			<div class='panel code'>
 				<div class='wrapper'>
@@ -761,6 +767,37 @@ $lgreen: rgba(195, 255, 188, 0.6);
 			height: 100%;
 			box-sizing: border-box;
 			overflow: hidden;
+		}
+
+		.colors {
+			display: flex;
+			flex-direction: row;
+			justify-content: flex-start;
+			align-items: center;
+			padding: 0 10px;
+
+			.color {
+				padding: 0 10px;
+				display: flex;
+				flex-direction: row;
+				justify-content: flex-start;
+				align-items: center;
+
+				.color-circle {
+					border: 1px solid #aaa;
+					width: 10px;
+					height: 10px;
+					border-radius: 10px;
+					margin-right: 5px;
+				}
+
+				.color-name {
+					margin: 0;
+					height: 1rem;
+					margin-bottom: 0.4rem;
+					box-sizing: border-box;
+				}
+			}
 		}
 	}
 

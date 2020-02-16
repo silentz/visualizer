@@ -2,6 +2,11 @@ import StateGenerator from '@/utils/state.js';
 
 
 export default class DFS {
+	static VISITED_COLOR = '#ddd'
+	static ACTIVE_COLOR = '#FFDEDE' //'#c4e8ff'
+	static CURRENT_COLOR = '#c3ffbc'
+	static COLOR_DEFAULT = '#fff'
+
 	constructor(nodes, edges, start_node, network_defaults) {
 		this.nodes = nodes.slice()
 		this.edges = edges.slice()
@@ -11,11 +16,12 @@ export default class DFS {
 			this.color[item.id] = 0
 		})
 		this.states = new StateGenerator(nodes, edges, network_defaults)
-		this.VISITED_COLOR = '#dddddd'
-		this.ACTIVE_COLOR = '#c4e8ff'
-		this.CURRENT_COLOR = '#c3ffbc'
 		this.REJECT_EDGE = '#e82c0c'
 		this.ACCEPT_EDGE = '#a0e8af'
+		this.VISITED_COLOR = '#ddd'
+		this.ACTIVE_COLOR = '#FFC3B3' //'#c4e8ff'
+		this.CURRENT_COLOR = '#c3ffbc'
+		this.COLOR_DEFAULT = '#fff'
 		this.EDGE_DEFAULT = '#666666'
 	}
 
@@ -67,6 +73,15 @@ export default class DFS {
 	run() {
 		this.dfs(this.start_node)
 		return this.states.states.slice()
+	}
+
+	static colors() {
+		return [
+			{name: 'unvisited', value: this.COLOR_DEFAULT},
+			{name: 'visited',   value: this.VISITED_COLOR},
+			{name: 'current',   value: this.CURRENT_COLOR},
+			{name: 'active',    value: this.ACTIVE_COLOR},
+		]
 	}
 
 	static languages() {
