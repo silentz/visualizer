@@ -23,7 +23,7 @@
 				</div>
 				<div class='final-buttons'>
 					<div class='button cancel' @click='$modal.hide("create-modal")'>Cancel</div>
-					<div class='button confirm'>Confirm</div>
+					<div class='button confirm' @click='create_example()'>Confirm</div>
 				</div>
 			</div>
 		</modal>
@@ -32,7 +32,7 @@
 				<div class='wrapper'>
 					<h2>Options</h2>
 					<div class='option-cards'>
-						<div v-for='(preset, index) in presets' :class='{"card": true, "card-active": (index == current_preset)}'
+						<div v-for='(preset, index) in presets_active' :class='{"card": true, "card-active": (index == current_preset)}'
 								@click="set_preset(index, true)">
 							<div class='card-header'>{{ preset.title }}</div>
 							<div class='card-context'>{{ preset.description }}</div>
@@ -115,12 +115,15 @@ export default {
 			// ===== [Language values] =====
 			language_chosen: 0,
 			current_speed: 20, // value in range [0, 100]
+			presets_active: [],
 			
 			// ===== [Input] =====
 			mode_chosen: 1,
 			node_counter: 1,
 			title: '',
 			description: '',
+			add_nodes: undefined,
+			add_edges: undefined,
 
 			// ===== [State variables] =====
 			visualization_active: false,
@@ -213,6 +216,7 @@ export default {
 	mounted: function() {
 		this.nodes = new DataSet([])
 		this.edges = new DataSet([])
+		this.presets_active = this.presets
 		this.network = new Network(document.getElementById("view-container"),
 			{ nodes: this.nodes, edges: this.edges}, this.network_options)
 		this.network.on('click', (data) => {
@@ -225,9 +229,21 @@ export default {
 		this.set_preset(0, true)
 	},
 	methods: {
+		create_example() {
+			let result = {
+				title: this.title,
+				description: this.description,
+				default_start_node: 1,
+				nodes: this.add_nodes.get(this.add_nodes.getIds()),
+				edges: this.add_edges.get(this.add_edges.getIds()),
+			}
+			this.presets_active.push(result)
+			this.$modal.hide('create-modal')
+		},
 		add_node(node, callback) {
-			let current_counter = this.node_counter++
-			node.label = center(current_counter.toString())
+			node.id = this.node_counter
+			node.label = center(this.node_counter.toString())
+			this.node_counter++
 			callback(node)
 		},
 		before_open() {
@@ -235,13 +251,15 @@ export default {
 			this.description = ''
 			this.mode_chosen = 1
 			this.node_counter = 1
+			this.add_nodes = new DataSet([])
+			this.add_edges = new DataSet([])
 			if (this.add_network_options.manipulation.addNode === undefined) {
 				this.add_network_options.manipulation.addNode = this.add_node
 			}
 			this.add_network = new Network(
 				document.getElementById("add-network"), {
-					nodes: [],
-					edges: [],
+					nodes: this.add_nodes,
+					edges: this.add_edges,
 				},
 				this.add_network_options
 			)
@@ -273,15 +291,15 @@ export default {
 		set_preset(preset_index, default_node) {
 			this.current_preset = preset_index
 			if (default_node) {
-				this.start_node = this.presets[preset_index].default_start_node
+				this.start_node = this.presets_active[preset_index].default_start_node
 			}
 			this.nodes.clear()
 			this.edges.clear()
-			this.nodes.add(this.presets[preset_index].nodes)
-			this.edges.add(this.presets[preset_index].edges)
+			this.nodes.add(this.presets_active[preset_index].nodes)
+			this.edges.add(this.presets_active[preset_index].edges)
 			this.states = new this.algorithm(
-				this.presets[preset_index].nodes,
-				this.presets[preset_index].edges,
+				this.presets_active[preset_index].nodes,
+				this.presets_active[preset_index].edges,
 				this.start_node,
 				this.network_options).run()
 			this.current_state = 0
