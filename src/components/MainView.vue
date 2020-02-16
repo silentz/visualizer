@@ -105,6 +105,7 @@
 
 <script>
 import {DataSet, Network} from "vis-network/standalone/esm/vis-network";
+import center from '@/utils/center';
 
 export default {
 	name: 'MainView',
@@ -117,7 +118,7 @@ export default {
 			
 			// ===== [Input] =====
 			mode_chosen: 1,
-			// add_network: undefined,
+			node_counter: 1,
 			title: '',
 			description: '',
 
@@ -201,6 +202,10 @@ export default {
 					},
 					width: 1,
 					chosen: true
+				},
+				manipulation: {
+					initiallyActive: false,
+					enabled: false,
 				}
 			}
 		}
@@ -220,10 +225,19 @@ export default {
 		this.set_preset(0, true)
 	},
 	methods: {
+		add_node(node, callback) {
+			let current_counter = this.node_counter++
+			node.label = center(current_counter.toString())
+			callback(node)
+		},
 		before_open() {
 			this.title = ''
 			this.description = ''
 			this.mode_chosen = 1
+			this.node_counter = 1
+			if (this.add_network_options.manipulation.addNode === undefined) {
+				this.add_network_options.manipulation.addNode = this.add_node
+			}
 			this.add_network = new Network(
 				document.getElementById("add-network"), {
 					nodes: [],
@@ -232,7 +246,6 @@ export default {
 				this.add_network_options
 			)
 			this.add_network.addNodeMode()
-			// this.add_network.on('click', this.change_mode)
 			this.add_network.on('release', this.change_mode)
 		},
 		change_mode() {
