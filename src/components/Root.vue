@@ -3,7 +3,8 @@
 		<div class='centered'>
 			<h1>Visualizer</h1>
 			<div class='buttons'>
-				<div class='button' @click='$router.push({"name": "dfs"})'>dfs</div>
+				<div class='button somemargin' @click='$router.push({"name": "dfs"})'>dfs</div>
+				<div class='button somemargin' @click='$router.push({"name": "bfs"})'>bfs</div>
 			</div>
 		</div>
 	</div>
@@ -17,6 +18,7 @@ export default {
 
 <style lang='scss'>
 @import "@/assets/fonts.scss";
+@import "@/assets/styles.scss";
 
 .root {
 	display: flex;
@@ -37,9 +39,13 @@ export default {
 			font-size: 3rem;
 		}
 
+		.somemargin {
+			margin: 0 15px;
+		}
+
 		.buttons {
 			display: flex;
-			flex-direction: column;
+			flex-direction: row;
 			justify-content: flex-start;
 			align-items: center;
 			padding-top: 30px;
